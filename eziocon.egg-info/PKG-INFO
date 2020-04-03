@@ -1,6 +1,6 @@
 Metadata-Version: 1.2
 Name: eziocon
-Version: 0.1
+Version: 0.1.1
 Summary: A common package for doing basic operations over sql structured databases 
 Home-page: https://github.com/iyappan24/eziocon
 Author: iyappan

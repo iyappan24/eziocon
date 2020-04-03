@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="eziocon", # Replace with your own username
-    version="0.1",
+    version="0.1.1",
     author="iyappan",
     author_email="iyappan.akp@gmail.com",
     description="A common package for doing basic operations over sql structured databases ",

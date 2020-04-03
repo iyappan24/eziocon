@@ -556,4 +556,4 @@ class Mysql :
 
         else:
 
-            raise ValueError("Database credentials not initialised : call set_connect function")
+            raise ValueError("Database credentials not initialised : call set_connect function ")
