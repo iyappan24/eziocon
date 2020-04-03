@@ -1,2 +1,12 @@
 # eziocon
-This repository consists of all the files which is a wrapper of python objects for generic functions for interacting with the Databases such as oracle, sql, mongodb
+A common package that acts as a python wrapper to do the following operations.
+
+<br> Insert one </Br>
+<br> Insert Many </Br>
+<br> Update </Br>
+<br> Fetch one </Br> 
+<br> Fetch many </Br>
+<br> Count </Br> 
+
+
+
