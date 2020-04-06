@@ -9,7 +9,7 @@ def connect_(username,pwd,host,database,port):
     pwd: String :password of the sql database
     host: String :host ip
     database: String :database name to be used
-    port : Integer database port
+    port : String: database port
 
     Output:
     :return: connection object if successfull, else returns

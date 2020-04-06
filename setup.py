@@ -22,8 +22,7 @@ setup(
     install_requires=[
          'pandas',
          'pymysql',
-         'cx_Oracle',
-          'json'
+         'cx_Oracle'
       ]
 )
 
