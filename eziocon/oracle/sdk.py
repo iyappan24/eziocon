@@ -1,9 +1,8 @@
 from .connection import connect_oracle
-import cx_Oracle
 import sys
 from .query_processor import count_query,fetchone_query,fetchmany_query,update_query,insertone_query,insertmany_query
 import pandas as pd
-
+import json 
 
 
 class oracle:
@@ -24,7 +23,7 @@ class oracle:
 
 
 
-    def set_connect(self,username,password,hostname,port,sid):
+    def setConnect(self,username,password,hostname,port,sid):
         """
         Input :
         username : String : Database Username
@@ -41,17 +40,6 @@ class oracle:
         self.__port = port
 
 
-        if isinstance(format, int):
-
-            if format == 1 or format == 2:
-                pass
-            else:
-
-                raise ValueError("Format must be either 1 (DataFrame) or 2 (Json) ")
-
-        else:
-
-            raise ValueError("Format must be  a integer")
 
         # connecting to the database to check the connection
 
@@ -69,7 +57,7 @@ class oracle:
     def count(self,tablename,condition = None):
 
         """
-        Function to get the tablename and sql condition to return the count of rows which satisfies the condition in the tablename
+        Function to get return the count of rows given the condition and the tablename
 
         Input :
         tablename: String : Table name in DB
@@ -127,26 +115,28 @@ class oracle:
 
 
 
-    def fetch_one(self,columns,tablename,condition=None,format=1):
+    def fetchOne(self,columns,tablename,condition=None,return_type=1):
 
 
         """
         Function to return the first row of the table and where the condition satisfies
 
         Input :
-        columns : iterator of Strings (list or tuple or set)  : Column names  in the table you want to view
+
+        columns : iterator of Strings (list or tuple )  : Column names  in the table you want to view
         table name: String : Table name in the DB
         condition : String : SQL  where clause condition
-        format : Integer : 1 for Data Frame and 2 for JSON parsed Dictionary object
+        return_type : Integer : 1 for Data Frame and 2 for JSON parsed Dictionary object
 
         Output : Parsed Json (List of Dictionaries) or DataFrame
         """
 
 
-        if isinstance(format,int) and (format==1 or format == 2):
+
+        if isinstance(return_type,int) and (return_type==1 or return_type == 2):
             pass
         else:
-            raise  ValueError("Format argument must be integer of value one or two")
+            raise  ValueError("return_type argument must be integer of value one or two")
 
 
         if self.connect_check == True :
@@ -172,17 +162,24 @@ class oracle:
 
                 result = pd.read_sql_query(con=connection, sql=query)
 
-                result.columns = columns
+
+                if len(result.columns) != len(columns): #exception for * input in the iterator
+
+                    pass
+
+                else:
+                    result.columns = columns
+
 
                 connection.close()
 
-                if format == 1:
+                if return_type == 1:
 
                     return result
 
                 else:
 
-                    result.to_json(orient='records')[0]
+                    json.loads(result.to_json(orient='records'))[0]
 
             except:
 
@@ -199,27 +196,28 @@ class oracle:
 
 
 
-    def fetch_many(self,columns,tablename,rows= -1,condition=None,format = 1):
+    def fetchMany(self,columns,tablename,rows= -1,condition=None,return_type = 1):
         """
         Function to fetch all the values from a given table with a given condition
 
         Input :
 
-        columns : Tuple : Columns in the table you want to view
+        columns : iterator of Strings (list or tuple )  : Column names  in the table you want to view
         table name: String : Table name in the DB
         condition : String : SQL  where clause condition
         rows : Integer: Number of rows to be fetched, Default = -1 : Fetch all
-        format : Integer : 1 for Data Frame and 2 for JSON parsed Dictionary object
+        return_type : Integer : 1 for Data Frame and 2 for JSON parsed Dictionary object
 
 
         Output: Data frame or Parsed Json (List of Dictionaries)
         """
 
 
-        if isinstance(format, int) and (format == 1 or format == 2):
+
+        if isinstance(return_type,int) and (return_type ==1 or return_type == 2):
             pass
         else:
-            raise ValueError("Format argument must be integer of value one or two")
+            raise  ValueError("type argument must be integer of value one or two")
 
 
         if self.connect_check == True:
@@ -246,18 +244,24 @@ class oracle:
 
                 result = pd.read_sql_query(con=connection,sql=query)
 
-                result.columns = columns
+
+                if len(result.columns) != len(columns):  # exception for * input in the iterator
+
+                    pass
+
+                else:
+                    result.columns = columns
 
                 connection.close()
 
-                if format ==  1:
+                if return_type ==  1:
 
 
                     return  result
 
                 else:
 
-                    return  result.to_json(orient='records')
+                    return  json.loads(result.to_json(orient='records'))
 
 
 
@@ -280,6 +284,8 @@ class oracle:
 
     def insert(self,tablename,objects):
         """
+        Function to insert records in the table given the objects and the tablename
+
         Input :
 
         tablename : String : Table name of the Database
@@ -382,7 +388,7 @@ class oracle:
         """
         Input :
 
-        tablename: String : Tablename of the DB
+        table name: String : Tablename of the DB
         updations: Object : Dictionary : Format : {column:value}
         condition: String : Where condition to filter in the Table
 

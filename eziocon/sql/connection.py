@@ -18,7 +18,7 @@ def connect_(username,pwd,host,database,port):
         connection = pymysql.connect(host=host,
                                user=username,
                                password=pwd,
-                               db=database,port = port
+                               db=database,port = int(port)
                                )
     except:
 

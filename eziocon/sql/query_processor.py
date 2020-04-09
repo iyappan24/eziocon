@@ -55,7 +55,7 @@ def fetchone_query(columns,tablename,condition):
 
         cols = cols[:len(cols) - 1]
     else:
-        cols = str(columns)[1:len(columns) - 1]
+        cols = str(columns[0])
 
     #creating query
 
@@ -101,16 +101,17 @@ def fetchmany_query(columns,tablename,condition,rows=-1):
     else:
         raise ValueError("rows can only be a integer and not less than 1")
 
+        # generating columns
 
+    if (len(columns) > 1):
+        cols = ""
+        for i in columns:
+            cols = cols + i + ","
 
-    # converting iterators  to string
-    cols = ""
-    for i in columns:
-        cols = cols + i + ","
+        cols = cols[:len(cols) - 1]
+    else:
 
-    cols = cols[:len(cols) - 1]
-
-
+        cols = str(columns[0])  # breakage -- check
 
     # 2 different queries : with and without where clause
 
@@ -255,8 +256,12 @@ def update_query(tablename,objects,condition):
     cols = ""
 
     for i in objects.keys():
-        substr = str(i) + " = " + str(objects[i]) + ","
+        if isinstance(objects[i],str): #prefixing and suffixing ' for string values
+            substr = str(i) + " = '" + str(objects[i]) + "',"
+        else:
+            substr = str(i) + " = " + str(objects[i]) + ","
         cols = cols + substr
+
     cols = cols[:len(cols) - 1]
 
     # query creation

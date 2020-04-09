@@ -1,9 +1,8 @@
 from  .connection import connect_
 import sys
 import pandas as pd
-import json
 from .query_processor import count_query,update_query, fetchone_query, fetchmany_query , insertmany_query, insertone_query
-
+import json
 class Mysql :
 
     def __int__(self):
@@ -20,7 +19,7 @@ class Mysql :
 
 
 
-    def set_connect(self,username, password, hostname, database, port):
+    def setConnect(self,username, password, hostname, database, port):
         """
         Function to set the connection and database credentials and testing connection to database
         Input :
@@ -49,7 +48,7 @@ class Mysql :
     def count(self,tablename, condition=None):
 
         """
-        Function to get the tablename and sql condition to return the count of rows which satisfies the condition in the tablename
+        Function  return the count of rows given the condition and the tablename
 
         Input :
         table name: String : Table name in DB
@@ -97,7 +96,7 @@ class Mysql :
 
 
 
-    def fetch_one(self,columns, tablename, condition=None,format = 1):
+    def fetchOne(self,columns, tablename, condition=None,return_type = 1):
 
         """
         Function to return the first row of the table and where the condition satisfies
@@ -106,6 +105,7 @@ class Mysql :
         columns : Iterator of Strings list or tuple or set of Strings (columns names) in the table you want to view
         table name: String : Table name in the DB
         condition: String : Where condition to filter in the Table
+        return_type : Integer: 1 for DataFrame and 2 For JSON parsed List of Dictionaries
 
         Output : Parsed Json (List of Dictionaries) or DataFrame
         """
@@ -113,18 +113,18 @@ class Mysql :
 
 
 
-        if isinstance(format,int):
+        if isinstance(return_type,int):
 
-            if format ==1 or format == 2 :
+            if return_type ==1 or return_type == 2 :
 
                 pass
             else:
 
-                raise ValueError("Format must be either 1 (DataFrame) or 2 (Json) ")
+                raise ValueError("return type must be either 1 (DataFrame) or 2 (Json) ")
 
         else:
 
-            raise ValueError("Format must be  a integer")
+            raise ValueError("return type  must be  a integer")
 
 
         #procesing query
@@ -146,7 +146,7 @@ class Mysql :
             
             try:
 
-                if format == 1:
+                if return_type == 1:
 
                      result =  pd.read_sql(query,connection) #returning Dataframe
 
@@ -177,7 +177,7 @@ class Mysql :
 
 
 
-    def fetch_many(self,columns, tablename, condition=None, rows=-1,format = 1):
+    def fetchMany(self,columns, tablename, condition=None, rows=-1,return_type = 1):
   
         """
         Function to fetch all the values from a given table with a given condition
@@ -188,21 +188,25 @@ class Mysql :
         table name: String : Tablename in the DB
         condition: String : Where condition to filter in the Table
         rows : Integer: Number of rows to be fetched, Default = -1 : Fetch all
+        return_type : Integer: 1 for DataFrame and 2 For JSON parsed List of Dictionaries
+
 
 
         Output: Data frame or Parsed Json (List of Dictionaries)
         """
 
-        # connecting to the database to check the connection
-        if isinstance(format, int):
+        if isinstance(return_type,int):
 
-            if format == 1 or format == 2:
+            if return_type ==1 or return_type == 2 :
+
                 pass
             else:
-                raise ValueError("Format must be either 1 (DataFrame) or 2 (Json) ")
+
+                raise ValueError("return type must be either 1 (DataFrame) or 2 (Json) ")
 
         else:
-            raise ValueError("Format must be  a integer")
+
+            raise ValueError("return type  must be  a integer")
 
         #processing query
 
@@ -226,7 +230,7 @@ class Mysql :
 
                 # fetch N records
 
-                if format == 1:
+                if return_type == 1:
 
                      result =  pd.read_sql(query,connection) #returning Dataframe
 
@@ -259,6 +263,8 @@ class Mysql :
 
     def insert(self,tablename,objects):
         """
+        Function to insert records into the given table
+
         Input :
 
         tablename : String : Tablename of the Database
@@ -379,7 +385,7 @@ class Mysql :
 
 
             try:
-                cursor.executemany(query)
+                cursor.execute(query)
                 connection.commit()
                 connection.close()
 
