@@ -61,11 +61,11 @@ def fetchone_query(columns,tablename,condition):
 
     if condition == None:
 
-        query = "select " + cols + " from " + tablename
+        query = "select " + cols + " from " + tablename + " limit 1"
 
     else:
 
-        query = "select " + cols + " from " + tablename + " where " + condition
+        query = "select " + cols + " from " + tablename + " where " + condition + " limit 1"
 
     return   query
 
